@@ -3,6 +3,8 @@ import 'package:bmi_app/SplashScreen.dart';
 import 'package:bmi_app/ui_helper/utils.dart';
 import 'package:flutter/material.dart';
 
+import 'JournalScreen.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -64,12 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CustomContainer(
-                    iMargin: _margin,
-                  ),
-                  CustomContainer(
-                    iMargin: _margin,
-                  ),
-                  CustomContainer(
+                    iText: "Journal",
                     iMargin: _margin,
                   ),
                   CustomContainer(
@@ -203,12 +200,15 @@ class CustomContainer extends StatelessWidget {
   Color? color;
   double? margin;
   int flex = 1;
+  String text = '';
 
   CustomContainer({
+    String iText = '',
     int iFlex = 1,
     Color iColor = Colors.white,
     required double iMargin,
   }) {
+    this.text = iText;
     this.flex = iFlex;
     this.color = iColor;
     this.margin = iMargin;
@@ -219,10 +219,21 @@ class CustomContainer extends StatelessWidget {
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          margin: EdgeInsets.only(bottom: double.parse(margin.toString())),
-          decoration: BoxDecoration(
-              color: this.color, borderRadius: BorderRadius.circular(21)),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => JournalScreen()),
+            );
+          },
+          child: Card(
+            elevation: 9,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(21)),
+            color: this.color,
+            margin: EdgeInsets.only(bottom: double.parse(margin.toString())),
+            child: Center(child: Text(text)),
+          ),
         ),
       ),
     );
