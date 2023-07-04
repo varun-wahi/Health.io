@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurpleAccent,
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,14 +35,14 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [
             Icon(
               Icons.monitor_weight,
-              color: Colors.white,
+              color: Colors.black,
               size: MediaQuery.of(context).size.height / 2,
             ),
             Text(
               "Health.io",
               style: style1(
                 size: 45,
-                fontColor: Colors.white,
+                fontColor: Colors.black,
                 // fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
