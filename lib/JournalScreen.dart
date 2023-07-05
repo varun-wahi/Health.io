@@ -2,38 +2,33 @@ import 'dart:collection';
 
 import 'package:bmi_app/ui_helper/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class JournalScreen extends StatelessWidget {
+  double _bmi = 0;
+  double _weight = 0;
+  int _heightFt = 0;
+  int _heightIn = 0;
+  List<String> _bmiList = [];
 
-  JournalScreen({}){
-    
+  JournalScreen(
+      {required double bmi,
+      required double weight,
+      required int heightFt,
+      required int heightIn,
+      required List<String> bmiList}) {
+    _bmi = bmi;
+    _heightFt = heightFt;
+    _heightIn = heightIn;
+    _weight = weight;
+    _bmiList = bmiList;
   }
 
   var entryController = TextEditingController();
   // Map<int, double> entries = HashMap();
-  List<double> bmiList = [
-    18,
-    20,
-    19.2,
-    21.3,
-    34,
-    34,
-    23,
-    23,
-    34,
-    45,
-    56,
-    56,
-    45,
-    342,
-    23,
-    132,
-    12,
-    23,
-    34
-  ];
 
-  Color BMIStats(double bmi) {
+  Color BMIStats(String bmi_string) {
+    var bmi = double.parse(bmi_string);
     var color;
     if (bmi < 18.5) {
       color = Colors.yellow;
@@ -72,7 +67,7 @@ class JournalScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            "Current height",
+                            "Height",
                             style: style1(
                               fontWeight: FontWeight.bold,
                               size: 20,
@@ -81,7 +76,7 @@ class JournalScreen extends StatelessWidget {
                           ),
                           Divider(),
                           Text(
-                            "6ft 3in",
+                            "$_heightFt ft $_heightIn in",
                             style: style1(
                               size: 25,
                             ),
@@ -102,7 +97,7 @@ class JournalScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            "Current Weight",
+                            "Weight",
                             style: style1(
                               fontWeight: FontWeight.bold,
                               size: 20,
@@ -111,7 +106,7 @@ class JournalScreen extends StatelessWidget {
                           ),
                           Divider(),
                           Text(
-                            "75 KGs",
+                            "$_weight KGs",
                             style: style1(
                               size: 25,
                             ),
@@ -141,15 +136,15 @@ class JournalScreen extends StatelessWidget {
                     Divider(),
                     Expanded(
                       flex: 4,
-                      child: SizedBox(
-                        // height: 300,
+                      child: Container(
                         child: ListView.separated(
                           itemBuilder: (context, index) {
                             return Container(
                               padding: EdgeInsets.all(20),
                               height: 120,
                               decoration: BoxDecoration(
-                                color: BMIStats(bmiList[index]),
+                                color: BMIStats(
+                                    _bmiList[_bmiList.length - index - 1]),
                                 borderRadius: BorderRadius.circular(21),
                               ),
                               child: Row(
@@ -162,7 +157,7 @@ class JournalScreen extends StatelessWidget {
                                     size: 12,
                                   ),
                                   Text(
-                                    "${bmiList[index]}",
+                                    "${_bmiList[_bmiList.length - index - 1]}",
                                     style: style1(
                                         fontColor: Colors.white,
                                         size: 30,
@@ -177,9 +172,9 @@ class JournalScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          itemCount: bmiList.length,
+                          itemCount: _bmiList.length,
                           separatorBuilder: (context, index) => Divider(
-                            thickness: 0,
+                            thickness: 1,
                             height: 20,
                           ),
                         ),
