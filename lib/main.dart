@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bmi_app/BMIScoreScreen.dart';
 import 'package:bmi_app/SplashScreen.dart';
 import 'package:bmi_app/ui_helper/utils.dart';
@@ -49,15 +51,29 @@ class _MyHomePageState extends State<MyHomePage> {
   var heightIn = 0;
   var weight;
 
-  double feet = 4;
-  double inches = 1;
+  double feet = 0;
+  double inches = 0;
 
   List<String> bmiList = [];
 
-  void writeNewData(String value) {
-    bmiList.add(value);
-    print("Added New Item: $value/n");
-    print("Updated BMI List:$bmiList");
+  Future<void> writeNewData({String? value}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (prefs.getStringList('bmi') == null) {
+      prefs.setStringList('bmi', ['0.00']);
+    }
+    if (value != null) {
+      bmiList = prefs.getStringList('bmi')!;
+      print("Retreived prefs list: $bmiList");
+      bmiList.add(value!);
+      prefs.setStringList('bmi', bmiList);
+      print("Added New Item: $value");
+      print("Updated BMI List:$bmiList");
+    } else {
+      bmiList = prefs.getStringList('bmi')!;
+
+      print("No Values Inserted");
+      print("Updated BMI List:$bmiList");
+    }
   }
 
   void calculateBMI(double _weight, int _heightFt, int _heightInches) {
@@ -171,53 +187,41 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "Feet",
                                 style: style1(),
                               ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Slider(
-                                        min: 0,
-                                        max: 10,
-                                        divisions: 10,
-                                        value: feet,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            feet =
-                                                double.parse(value.toString());
-                                            heightInFeet_textController.text =
-                                                int.parse(
-                                                        feet.toStringAsFixed(0))
-                                                    .toString();
-                                          });
-                                        }),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        var val = int.parse(
-                                            heightInFeet_textController.text
-                                                .toString());
-                                        if (val > 10) {
-                                          val = 10;
-                                          heightInFeet_textController.text =
-                                              val.toString();
-                                        }
-                                        setState(() {
-                                          feet = double.parse(val.toString());
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: heightFt.toString(),
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                      controller: heightInFeet_textController,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
+                              TextField(
+                                onChanged: (value) {
+                                  var val = int.parse(
+                                      heightInFeet_textController.text
+                                          .toString());
+                                  if (val > 10) {
+                                    val = 10;
+                                    heightInFeet_textController.text =
+                                        val.toString();
+                                  }
+                                  setState(() {
+                                    feet = double.parse(val.toString());
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: heightFt.toString(),
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.number,
+                                controller: heightInFeet_textController,
+                                textAlign: TextAlign.center,
                               ),
+                              Slider(
+                                  min: 0,
+                                  max: 10,
+                                  divisions: 10,
+                                  value: feet,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      feet = double.parse(value.toString());
+                                      heightInFeet_textController.text =
+                                          int.parse(feet.toStringAsFixed(0))
+                                              .toString();
+                                    });
+                                  }),
                             ],
                           ),
                         ),
@@ -233,54 +237,42 @@ class _MyHomePageState extends State<MyHomePage> {
                                 "Inches",
                                 style: style1(),
                               ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Slider(
-                                        min: 0,
-                                        max: 11,
-                                        divisions: 11,
-                                        value: inches,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            inches =
-                                                double.parse(value.toString());
-                                            heightInches_textController
-                                                .text = int.parse(
-                                                    inches.toStringAsFixed(0))
-                                                .toString();
-                                          });
-                                        }),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: TextField(
-                                      onChanged: (value) {
-                                        var val = int.parse(
-                                            heightInches_textController.text
-                                                .toString());
-                                        if (val > 11) {
-                                          val = 11;
-                                          heightInches_textController.text =
-                                              val.toString();
-                                        }
+                              TextField(
+                                onChanged: (value) {
+                                  var val = int.parse(
+                                      heightInches_textController.text
+                                          .toString());
+                                  if (val > 11) {
+                                    val = 11;
+                                    heightInches_textController.text =
+                                        val.toString();
+                                  }
 
-                                        setState(() {
-                                          inches = double.parse(val.toString());
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        hintText: heightIn.toString(),
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      keyboardType: TextInputType.number,
-                                      controller: heightInches_textController,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
+                                  setState(() {
+                                    inches = double.parse(val.toString());
+                                  });
+                                },
+                                decoration: InputDecoration(
+                                  hintText: heightIn.toString(),
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.number,
+                                controller: heightInches_textController,
+                                textAlign: TextAlign.center,
                               ),
+                              Slider(
+                                  min: 0,
+                                  max: 11,
+                                  divisions: 11,
+                                  value: inches,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      inches = double.parse(value.toString());
+                                      heightInches_textController.text =
+                                          int.parse(inches.toStringAsFixed(0))
+                                              .toString();
+                                    });
+                                  }),
                             ],
                           ),
                         ),
@@ -302,7 +294,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   ///////////////////////////////////////
                   BMIStats(bmi);
-                  writeNewData(bmi.toStringAsFixed(2));
+                  writeNewData(value: bmi.toStringAsFixed(2));
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -318,27 +310,29 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  calculateBMI(
-                    double.parse(weight_textController.text.toString()),
-                    int.parse(heightInFeet_textController.text.toString()),
-                    int.parse(
-                      heightInches_textController.text.toString(),
-                    ),
-                  );
+                  writeNewData();
 
-                  ///////////////////////////////////////
-                  BMIStats(bmi);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => JournalScreen(
-                              bmi: bmi,
-                              heightFt: heightFt,
-                              heightIn: heightIn,
-                              weight: weight,
-                              bmiList: bmiList,
-                            )),
-                  );
+                  if (bmiList.length != 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => JournalScreen(bmiList: bmiList),
+                      ),
+                    );
+                  } else {
+                    Timer(
+                      const Duration(milliseconds: 200),
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  JournalScreen(bmiList: bmiList)),
+                        );
+                        print("Wait Over");
+                      },
+                    );
+                  }
                   setState(() {});
                 },
                 child: Text('View History'),
