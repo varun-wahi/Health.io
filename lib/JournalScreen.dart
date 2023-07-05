@@ -4,6 +4,11 @@ import 'package:bmi_app/ui_helper/utils.dart';
 import 'package:flutter/material.dart';
 
 class JournalScreen extends StatelessWidget {
+
+  JournalScreen({}){
+    
+  }
+
   var entryController = TextEditingController();
   // Map<int, double> entries = HashMap();
   List<double> bmiList = [
