@@ -126,8 +126,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
           padding: EdgeInsets.all(30),
           margin: EdgeInsets.only(top: 50, bottom: 50),
-          width: MediaQuery.of(context).size.width,
-          // height: MediaQuery.of(context).size.height,
+          width: MediaQuery.sizeOf(context).width,
+          // height: MediaQuery.sizeOf(context).height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(21),
             color: Colors.white,
@@ -153,7 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 20,
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 3,
+                    width: MediaQuery.sizeOf(context).width / 3,
                     child: TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
